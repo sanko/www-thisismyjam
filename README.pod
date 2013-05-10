@@ -1,0 +1,22 @@
+=pod
+
+=head1 NAME
+
+WWW::ThisIsMyJam - Synchronous and asynchronous interfaces to This Is My Jam
+
+=head1 VERSION
+
+version 0.0.1
+
+=head1 AUTHOR
+
+Sanko Robinson <sanko@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2013 by Sanko Robinson.
+
+This is free software, licensed under:
+
+  The Artistic License 2.0 (GPL Compatible)
+

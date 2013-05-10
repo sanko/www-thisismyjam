@@ -1,0 +1,249 @@
+# PODNAME: WWW::ThisIsMyJam
+
+=pod
+
+=head1 NAME
+
+WWW:ThisIsMyJam - Synchronous and asynchronous interfaces to This Is My Jam
+
+=head1 SYNOPSIS
+
+    use WWW::ThisIsMyJam;
+    my $jam = WWW::ThisIsMyJam->new;
+    ...; # XXX - TODO
+
+=head1 Description
+
+This module provides access to Jam data through the new, official API in
+synchronous or asynchronous mode.
+
+The asynchronous mode requires you have L<AnyEvent> and L<AnyEvent::HTTP>
+available. However, since it's just I<supported> and not I<necessary>, it is
+not declared as a prerequisite.
+
+=head1 METHODS
+
+This Is My Jam provides an ultra simple, JSON-based API. First, we'll cover
+public utility methods and then the categorized Jam functions.
+
+=head2 new ( )
+
+Creates a new L<WWW::ThisIsMyJam> object.
+
+    # typical usage
+    my $jam = WWW::ThisIsMyJam->new;
+
+    # it would be pointless to change these, but it's possible
+    my $jam = WWW::ThisIsMyJam->new(
+        apiversion => 1,
+        basename   => 'http://api.thisismyjam.com'
+    );
+
+=head2 Person
+
+Person methods cover a single user.
+
+=head3 user ( person )
+
+A user's overview data includes all information about the requested person
+along with their current jam (if any). All methods require at least a
+username.
+
+    # Fetch info for the Jam of the Day account
+    my $overview = $timj->user( 'jamoftheday' );
+
+    # Use callbacks for a specific user
+    $timj->user( 'jamoftheday', cb => sub { my ( $overview ) = @_; ... } );
+
+=head3 likes( person )
+
+Returns a list of liked jams. Takes the optional parameter 'show', which
+specifies whether ot include only current or past (expired) jams.
+
+    # Get jams I like
+    $timj->likes( 'jamoftheday' );
+
+    # Only get active jams
+    $timj->likes( { person => 'jamoftheday', show => 'current' } );
+
+    # Only get expired jams from the past
+    $timj->likes( { person => 'jamoftheday', show => 'past' } );
+
+=head3 jams( user )
+
+Returns a list of the person’s jams. Optional parameter 'show' can be set to
+only show past (expired) jams.
+
+    # Get all of a user's jams
+    $timj->jams( person => 'jamoftheday' );
+
+    # Only get (expired) jams from the past
+    $timj->jams( person => 'jamoftheday', show => 'past' );
+
+=head3 following( user )
+
+Returns a list of people that a particular person is following. Optional
+parameter 'order' can be set to sort the users: C<< order => 'followedDate' >>
+orders by date followed; C<< order => 'affinity' >> currently orders by number
+of likes from the requested person; C<< order => 'name' >> orders by name
+alphabetically.
+
+While omitted from the official documentation, observation indicates that
+'affinity' is the default order.
+
+    # Get users the person if following
+    $timj->following( person => 'jamoftheday' );
+
+    # Get users the person is following sorted by name
+    $timj->following( person => 'jamoftheday', order => 'name' );
+
+=head3 followers( user )
+
+Returns a list of people that a particular person is followed by. Optional
+parameter 'order' can be set to sort the users: C<< order => 'followedDate' >>
+orders by date followed; C<< order => 'affinity' >> currently orders by number
+of likes from the requested person; C<< order => 'name' >> orders by name
+alphabetically.
+
+While omitted from the official documentation, observation indicates that
+'affinity' is the default order.
+
+    # Get users the person if following
+    $timj->followers( person => 'jamoftheday' );
+
+    # Get users the person is following sorted by name
+    $timj->followers( person => 'jamoftheday', order => 'name' );
+
+=head3 follow( user )
+
+Follow the specified user. Requires L<authentication|/Authentication>.
+
+    # Follow someone
+    $timj->follow( person => 'jamoftheday' );
+
+=head3 unfollow( user )
+
+Unfollow the specified user. Requires L<authentication|/Authentication>.
+
+    # Unfollow someone
+    $timj->unfollow( person => 'jamoftheday' );
+
+
+
+=head1 API Methods and Arguments
+
+Most This Is My Jam API methods take parameters. All WWW::ThisIsMyJam API
+methods will accept a HASH ref of named parameters as specified in the
+This Is My Jam API documentation. For convenience, many WWW::ThisIsMyJam
+methods accept simple positional arguments. The positional parameter passing
+style is optional; you can always use the named parameters in a HASH reference
+if you prefer.
+
+You may pass any number of required parameters as positional parameters. You
+I<must> pass them in the order specified in the documentation for each method.
+Optional parameters must be passed as named parameters in a HASH reference.
+The HASH reference containing the named parameters must be the final parameter
+to the method call. Any required parameters not passed as positional
+parameters, must be included in the named parameter HASH reference.
+
+For example, the REST API method C<following> has one required parameter,
+C<person>. You can call update with a HASH ref argument:
+
+    $timj->following({ person => 'jamoftheday' });
+
+Or, you can use the convenient, positional parameter form:
+
+    $timj->following('jamoftheday');
+
+The C<following> method also has an optional parameter: C<order>. You B<must>
+use the HASH ref form:
+
+    $timj->following({ person => 'jamoftheday', order => 'name' });
+
+You may use the convenient positional form for the required C<person>
+parameter with the optional parameters specified in the named parameter HASH
+reference:
+
+    $timj->following('jamoftheday', { order => 'name' });
+
+Convience form is provided for the required parameters of all API methods. So,
+these two calls are equivalent:
+
+    $timj->search_jams({ by => 'artist', q => 'Stone Roses' });
+    $timj->search_jams('artist', 'Stone Roses');
+
+=head2 Paging
+
+Some methods return partial results a page at a time. For these, there is an
+optional C<page> parameter. The first page is returned by passing
+C<< page =>> 1 >>, the second page by passing C<< page => 2 >>, etc. If no
+C<page> parameter is passed, the first page is returned.
+
+Here's an example that demonstrates how to obtain all previous jams in a loop:
+
+    my @favs;
+    for ( my $page = 1; ; ++$page ) {
+        push @favs, $timj->jams({ person => 'jamoftheday', page => $page })->{jams};
+        last unless $r->{list}{hasMore}
+    }
+
+=head2 Asynchronus Callbacks
+
+The supported asynchronous mode requires an additional parameter C<cb>. This
+must be a CODE ref and works like so:
+
+    $timj->verify({ cb => sub { ... } });
+
+    $timj->jams( 'jamoftheday', { cb => sub { ... } });
+
+=head1 Dependencies
+
+=over 4
+
+=item * Try::Tiny
+
+=item * HTTP::Tiny
+
+=item * JSON
+
+=item * Carp
+
+=item * URI
+
+=item * URI::QueryParam
+
+=back
+
+=head2 Optional Dependencies
+
+=over 4
+
+=item * AnyEvent
+
+=item * AnyEvent::HTTP
+
+=back
+
+=head1 See Also
+
+=over 4
+
+=item * Net::Twitter
+
+=item * Net::xkcd
+
+=back
+
+=head1 AUTHOR
+
+Sanko Robinson <sanko@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Sanko Robinson.
+
+
+TODO: Artistic 2 statement
+
+
+=cut
