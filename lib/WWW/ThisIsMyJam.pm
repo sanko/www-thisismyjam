@@ -1,6 +1,5 @@
 package WWW::ThisIsMyJam;
 # ABSTRACT: Synchronous and asynchronous interfaces to This Is My Jam
-# http://www.thisismyjam.com/developers/docs
 our $API     = 1;
 our $URL     = 'http://api.thisismyjam.com';
 our $VERSION = v0.0.1;
@@ -60,14 +59,14 @@ our %API = (
                params       => [qw[person cb]],
                required     => [qw[person]],
                returns      => 'Bool',
-               authenticate => 1                   # Requires OAuth
+               authenticate => 1
     },
     unfollow => {path         => ':person/unfollow',
                  method       => 'POST',
                  params       => [qw[person cb]],
                  required     => [qw[person]],
                  returns      => 'Bool',
-                 authenticate => 1                     # Requires OAuth
+                 authenticate => 1
     },
 
     # Jam
@@ -94,21 +93,21 @@ our %API = (
              params       => [qw[id cb]],
              required     => [qw[id]],
              returns      => 'Bool',
-             authenticate => 1                  # Requires OAuth
+             authenticate => 1
     },
     unlike => {path         => 'jams/:id/unlike',
                method       => 'POST',
                params       => [qw[id cb]],
                required     => [qw[id]],
                returns      => 'Bool',
-               authenticate => 1                    # Requires OAuth
+               authenticate => 1
     },
     post_comment => {path         => 'jams/:id/comment',
                      method       => 'POST',
                      params       => [qw[id comment cb]],
                      required     => [qw[id comment]],
                      returns      => 'Bool',
-                     authenticate => 1                      # Requires OAuth
+                     authenticate => 1
     },
 
     # Comments
@@ -123,7 +122,7 @@ our %API = (
                        params       => [qw[id cb]],
                        required     => [qw[id]],
                        returns      => 'Bool',
-                       authenticate => 1                 # Requires OAuth
+                       authenticate => 1
     },
 
     # Explore
@@ -185,7 +184,7 @@ our %API = (
                params       => [qw[cb]],
                required     => [],
                returns      => 'HashRef',
-               authenticate => 1            # Requires OAuth
+               authenticate => 1
     },
 );
 for my $method (keys %API) {
