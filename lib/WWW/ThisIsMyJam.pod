@@ -176,7 +176,7 @@ these two calls are equivalent:
 
 Some methods return partial results a page at a time. For these, there is an
 optional C<page> parameter. The first page is returned by passing
-C<< page =>> 1 >>, the second page by passing C<< page => 2 >>, etc. If no
+C<< page => 1 >>, the second page by passing C<< page => 2 >>, etc. If no
 C<page> parameter is passed, the first page is returned.
 
 Here's an example that demonstrates how to obtain all previous jams in a loop:
@@ -200,17 +200,17 @@ must be a CODE ref and works like so:
 
 =over 4
 
-=item * Try::Tiny
+=item * L<Try::Tiny>
 
-=item * HTTP::Tiny
+=item * L<HTTP::Tiny>
 
-=item * JSON
+=item * L<JSON>
 
-=item * Carp
+=item * L<Carp>
 
-=item * URI
+=item * L<URI>
 
-=item * URI::QueryParam
+=item * L<URI::QueryParam>
 
 =back
 
@@ -218,9 +218,9 @@ must be a CODE ref and works like so:
 
 =over 4
 
-=item * AnyEvent
+=item * L<AnyEvent>
 
-=item * AnyEvent::HTTP
+=item * L<AnyEvent::HTTP>
 
 =back
 
@@ -228,9 +228,9 @@ must be a CODE ref and works like so:
 
 =over 4
 
-=item * Net::Twitter
+=item * L<Net::Twitter>
 
-=item * Net::xkcd
+=item * L<Net::xkcd>
 
 =back
 
