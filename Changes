@@ -1,4 +1,8 @@
 Revision history for WWW::ThisIsMyJam.
 
+v0.0.2   May 12th, 2013
+        * Minor documentation cleanup
+        * Support undocumented rejammers( id ) method
+
 v0.0.1   May 10th, 2013
         * oh, hai
