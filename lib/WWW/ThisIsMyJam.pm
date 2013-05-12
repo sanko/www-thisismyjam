@@ -318,7 +318,7 @@ username.
     my $overview = $timj->user( 'jamoftheday' );
 
     # Use callbacks for a specific user
-    $timj->user( 'jamoftheday', cb => sub { my ( $overview ) = @_; ... } );
+    $timj->user( 'jamoftheday', { cb => sub { my ( $overview ) = @_; ... } });
 
 =head3 likes( person )
 
@@ -329,10 +329,10 @@ specifies whether to include only current or past (expired) jams.
     $timj->likes( 'jamoftheday' );
 
     # Only get active jams
-    $timj->likes( { person => 'jamoftheday', show => 'current' } );
+    $timj->likes({ person => 'jamoftheday', show => 'current' });
 
     # Only get expired jams
-    $timj->likes( { person => 'jamoftheday', show => 'past' } );
+    $timj->likes({ person => 'jamoftheday', show => 'past' });
 
 =head3 jams( person )
 
@@ -612,7 +612,7 @@ jams in a loop:
     my @jams;
     for (my $page = 1;; ++$page) {
         my $r = $timj->jams({person => 'jamoftheday', page => $page});
-        push @jams, $r->{jams};
+        push @jams, @{$r->{jams}};
         last unless $r->{list}{hasMore};
     }
 
