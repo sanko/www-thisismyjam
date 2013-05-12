@@ -390,6 +390,10 @@ WWW::ThisIsMyJam will support OAuth.
 
 =item * L<URI::QueryParam>
 
+=item * L<Moo>
+
+=item * L<Type::Tiny>
+
 =back
 
 =head2 Optional Dependencies

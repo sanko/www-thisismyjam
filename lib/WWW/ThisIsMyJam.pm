@@ -1,8 +1,7 @@
 package WWW::ThisIsMyJam;
+
 # ABSTRACT: Synchronous and asynchronous interfaces to This Is My Jam
-our $API     = 1;
-our $URL     = 'http://api.thisismyjam.com';
-our $VERSION = v0.0.1;
+our $VERSION = v0.0.2;
 use strict;
 use warnings;
 use Carp;
@@ -14,15 +13,18 @@ use URI::QueryParam;
 my $can_async
     = try { require AnyEvent; require AnyEvent::HTTP; !!1 } catch { !1 };
 #
-sub new {
-    my $c = shift;
-    my %args = (apiversion => $API,
-                baseurl    => $URL,
-                oauth      => {},
-                @_
-    );
-    return bless {%args}, $c;
-}
+use Moo;
+use Types::Standard qw[Object Int Str];
+use Type::Utils qw[coerce from];
+#
+has apiversion => (is => 'ro', isa => Int, default => '1');
+coerce Object, from Str, q[URI->new( $_ )];
+has baseurl => (is      => 'ro',
+                isa     => Object,
+                default => 'http://api.thisismyjam.com',
+                coerce  => Object->coercion
+);
+#
 our %API = (
     person => {path     => ':person',
                method   => 'GET',
@@ -212,7 +214,7 @@ sub _request {
             $method, $url,
             sub {
                 my $body = shift;
-                my $meta = _decode_json($body);
+                my $meta = $s->_decode_json($body);
                 return $cb->($meta);
             }
         );
@@ -222,11 +224,12 @@ sub _request {
     # this is sync
     my $result = HTTP::Tiny->new->request($method, $url);
     $result->{'success'} or croak "Can't fetch $url: " . $result->{'reason'};
-    my $meta = _decode_json($result->{'content'});
+    my $meta = $s->_decode_json($result->{'content'});
     return $meta;
 }
 
 sub _decode_json {
+    my $s    = shift;
     my $json = shift;
     my $data = try { decode_json $json }
     catch { croak "Can't decode '$json': $_" };
@@ -244,10 +247,10 @@ sub _parse_args {
     }
     my $args_2 = shift;
     @args{keys %$args_2} = values %$args_2;
+
     #for my $arg (@{$API{$method}{required}}) {
     #    $args{$arg} // croak qq[required arg '$arg' is is missing!];
     #}
-
     # replace placeholder arguments
     my $local_path = $API{$method}{path};
     $local_path =~ s,/:id$,,
@@ -255,13 +258,13 @@ sub _parse_args {
     $local_path
         =~ s/:(\w+)/delete $args{$1} or croak "required arg '$1' missing"/eg;
     #
-    my $cb  = delete $args{cb};
-    my $uri = URI->new("$URL/$API/$local_path.json");
+    my $cb = delete $args{cb};
+    my $uri = URI->new(sprintf '%s/%d/%s.json', $s->baseurl,
+                       $s->apiversion,          $local_path);
     $uri->query_form_hash(%args);
     ($API{$method}{method}, $uri, $cb);
 }
 !!'This is my Jam!';
-
 
 =pod
 
@@ -654,6 +657,10 @@ WWW::ThisIsMyJam will support OAuth.
 =item * L<URI>
 
 =item * L<URI::QueryParam>
+
+=item * L<Moo>
+
+=item * L<Type::Tiny>
 
 =back
 
