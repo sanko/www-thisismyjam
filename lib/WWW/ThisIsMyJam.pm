@@ -522,13 +522,18 @@ Search methods return lists of related material. With great power...
 =head3 search_jams( by, q )
 
 Searching by artist will return jams by or similar to the requested artist.
-Genre search is powered by Last.fm tag search.
+Genre search is powered by Last.fm tag search. Hashtag support is experimental
+(no pagination, might be slow so use the
+L<asynchronus interface|/"Asynchronus Callbacks">).
 
     # Find jams similar to those by The Knife
     $timj->search_jams({ by => 'artist', q => 'the knife' });
 
     # Find electronica jams
     $timj->search_jams({ by => 'genre', q => 'electro' });
+
+    # Find jams with descriptions containing #jolly hashtags
+    $timj->search_jams({ by => 'hashtag', q => 'jolly' }); # Note missing #
 
 =head3 search_people( by, q )
 
