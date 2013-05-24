@@ -1,11 +1,11 @@
 package WWW::ThisIsMyJam;
 
 # ABSTRACT: Synchronous and asynchronous interfaces to This Is My Jam
-our $VERSION = v0.0.2;
+our $VERSION = v0.0.3;
 use strict;
 use warnings;
 use Carp;
-use JSON;
+use JSON::Tiny;
 use Try::Tiny;
 use HTTP::Tiny;
 use URI;
@@ -194,7 +194,7 @@ our %API = (
                required     => [],
                returns      => 'HashRef',
                authenticate => 1
-    },
+    }
 );
 for my $method (keys %API) {
     eval sprintf
@@ -231,7 +231,7 @@ sub _request {
 sub _decode_json {
     my $s    = shift;
     my $json = shift;
-    my $data = try { decode_json $json }
+    my $data = try { JSON::Tiny::j($json) }
     catch { croak "Can't decode '$json': $_" };
     return $data;
 }
@@ -650,7 +650,7 @@ WWW::ThisIsMyJam will support OAuth.
 
 =item * L<HTTP::Tiny>
 
-=item * L<JSON>
+=item * L<JSON::Tiny>
 
 =item * L<Carp>
 
