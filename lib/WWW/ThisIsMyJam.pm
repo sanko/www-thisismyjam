@@ -449,7 +449,7 @@ Post a new comment on a jam. Requires L<authentication|Authentication>.
 
 Returns a list of people who rejammed this jam.
 
-    # Find out *true* fans of this jam
+    # Find *true* fans of this jam
     $timj->rejammers({ id => '4zugtyg' });
 
 =head2 Comments
