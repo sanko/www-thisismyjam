@@ -60,4 +60,5 @@
 
 
 # My junk
-\.bak$
+t\..+
+MANIFEST\.SKIP
