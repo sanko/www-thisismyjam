@@ -1,7 +1,7 @@
 package WWW::ThisIsMyJam;
 
 # ABSTRACT: Synchronous and asynchronous interfaces to This Is My Jam
-our $VERSION = v0.0.3;
+use version; our $VERSION = version->declare('v0.1.0');
 use strict;
 use warnings;
 use Carp;

@@ -1,5 +1,9 @@
 Revision history for WWW::ThisIsMyJam.
 
+v0.1.0   May 24th, 2013
+        * Milestone (no changes from v0.0.3)
+        * Move to Dist::Milla (and thus Module::Build::Tiny, etc.)
+
 v0.0.3   May 24th, 2013
         * Switch from JSON to JSON::Tiny
         * Mention new hashtag search support
