@@ -90,6 +90,12 @@ our %API = (
                  required => [qw[id]],
                  returns  => 'ArrayRef[Comment]'
     },
+    related => {path     => 'jams/:id/related',
+                method   => 'GET',
+                params   => [qw[id cb]],
+                required => [qw[id]],
+                returns  => 'ArrayRef[Jam]'
+    },
     like => {path         => 'jams/:id/like',
              method       => 'POST',
              params       => [qw[id cb]],
@@ -424,6 +430,15 @@ Returns a list of the comments that have been added to a jam.
     # What you say?
     $timj->comments({ id => '4zugtyg' });
 
+=head3 related( id )
+
+Returns a list of jams that may be related (musically or otherwise) to the
+specified jam. Only works on active jams and not to be confused with
+L<C<related_jams( username )>|/"related_jams( username )">.
+
+    # All of these things are just like the other
+    $timj->related({ id => '5sd5q1b' });
+
 =head3 like( id )
 
 Like a jam. You can only like jams that are currently active. Requires
@@ -503,7 +518,8 @@ Returns a list of jams from people who have just joined This Is My Jam.
 
 =head3 related_jams( username )
 
-A list of jams related to username's current jam.
+A list of jams related to username's current jam. Easily but not to be
+confused with L<C<related( id )>|/"related( id )">.
 
     # Grab jams related to the current Jam of the Day
     $timj->related_jams({ username => 'jamoftheday' });
